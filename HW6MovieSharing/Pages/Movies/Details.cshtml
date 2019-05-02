@@ -1,0 +1,100 @@
+@page
+@model HW6MovieSharing.Pages.Movies.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+<h2>Details</h2>
+<div>
+    <a asp-page="./Index">Back to List</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.Movie.ID">Edit</a>
+</div>
+<div>
+    <h4>@Html.DisplayFor(model => model.Movie.Title)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Movie.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Movie.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Movie.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Movie.Category)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Movie.Shareable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Movie.Shareable)
+        </dd>
+        <dt>
+            Shared Details
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Movie.SharedWithFirstName) @Html.DisplayFor(model => model.Movie.SharedWithLastName)
+            <br />
+            @Html.DisplayFor(model => model.Movie.SharedDate)
+        </dd>
+    </dl>
+</div>
+
+@if (Model.Movie.SharedWithId != null && Model.Movie.BeingReturned)
+{
+    <div>
+        <span class="text-info">@Model.Movie.SharedWithFirstName has returned this movie. Have you received it yet?</span>
+        <form method="post">
+            <input type="hidden" asp-for="Movie.ID" />
+            <button class="btn btn-danger">Acknowledge</button>
+        </form>
+    </div>
+}
+
+@if (Model.Requests.Count() != 0) // there are requests
+{
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Requester</th>
+                    <th>Email Address</th>
+                    <th>Time Requested</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var req in Model.Requests.OrderBy(r => r.TimeRequested))
+                {
+                    <tr>
+                        <td>@req.RequesterFirstName @req.RequesterLastName</td>
+                        <td>@req.RequesterEmailAddress</td>
+                        <td>
+                            @req.TimeRequested.ToShortDateString() @req.TimeRequested.ToShortTimeString()
+                        </td>
+                        <td>
+                            @if (Model.Movie.SharedWithId == null) // only allow accepting if movie is not currently shared
+                            {
+                                <a asp-page="./Requests/Accept" asp-route-id="@req.RequestID">Accept</a>
+                                <br />
+                            }
+                            <a asp-page="./Requests/Reject" asp-route-id="@req.RequestID">Reject</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    if (!Model.Movie.Shareable) // not shareable
+    {
+        <div class="alert alert-warning">No one can see your movie. Make this movie shareable so others can request to borrow it!</div>
+    }
+    else
+    {
+        <div class="alert alert-info">Looks like no one has requested to borrow your movie. Yet.</div>
+    }
+}

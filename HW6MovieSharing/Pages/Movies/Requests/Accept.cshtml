@@ -1,0 +1,44 @@
+﻿@page
+@model HW6MovieSharing.Pages.Movies.Requests.AcceptModel
+@{
+    ViewData["Title"] = "Accept";
+}
+
+<h2>Accept</h2>
+<h3>Are you sure you want to accept this request?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            Requested Movie
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Movie.Title)
+        </dd>
+        <dt>
+            Requester
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MovieRequest.RequesterFirstName)
+            @Html.DisplayFor(model => model.MovieRequest.RequesterLastName)
+        </dd>
+        <dt>
+            Email Address
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MovieRequest.RequesterEmailAddress)
+        </dd>
+        <dt>
+            Time Requested
+        </dt>
+        <dd>
+            @Model.MovieRequest.TimeRequested.ToShortDateString() @Model.MovieRequest.TimeRequested.ToShortTimeString()
+        </dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="MovieRequest.RequestID" />
+        <input type="submit" value="Accept" class="btn btn-default" /> |
+        <a asp-page="../Details">Back to Movie</a>
+    </form>
+</div>
+

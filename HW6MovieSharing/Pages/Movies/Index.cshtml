@@ -1,0 +1,58 @@
+@page
+@model HW6MovieSharing.Pages.Movies.IndexModel
+
+@{
+    ViewData["Title"] = "My Movies";
+}
+
+<h2>My Movies</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Category)
+            </th>
+            <th>
+                Public
+            </th>
+            <th>
+                Shared Details
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Movie) {
+        <tr>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Title)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shareable)
+                @if (item.Shareable && Model.OtherMovieRequests.Where(r => r.MovieID == item.ID).Count() != 0)
+                {
+                    <span class="alert alert-info">@Model.OtherMovieRequests.Where(r => r.MovieID == item.ID).Count()</span>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.SharedWithFirstName) @Html.DisplayFor(model => item.SharedWithLastName)
+                <br />
+                @Html.DisplayFor(model => item.SharedDate)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

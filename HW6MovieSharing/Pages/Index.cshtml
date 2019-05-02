@@ -1,0 +1,99 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Overview";
+}
+<h2>Overview</h2>
+
+<h3>Borrowed Movies</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Category)
+            </th>
+            <th>
+                Owner
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Borrowed, need to return -->
+        @foreach (var item in Model.Movie.Where(m => m.SharedWithId == Model.AuthenticatedUserInfo.ObjectIdentifier))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerDisplay)
+                </td>
+                <td>
+                    @if (!item.BeingReturned)
+                    {
+                        <form method="post">
+                            <input type="submit" value="Return" class="btn btn-default" asp-route-id="@item.ID" />
+                        </form>
+                    } else
+                    {
+                        <span class="small">Awaiting return acknowledgement...</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Borrow Movies</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Category)
+            </th>
+            <th>
+                Owner
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Available Movies -->
+        @foreach (var item in Model.Movie.Where(m => m.SharedWithId != Model.AuthenticatedUserInfo.ObjectIdentifier))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerDisplay)
+                </td>
+                <td>
+                    @if (!Model.MyMovieRequests.Any(r => r.MovieID == item.ID))
+                    {
+                        <form method="post">
+                            <input type="submit" value="Request" class="btn btn-default" asp-route-id="@item.ID" />
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

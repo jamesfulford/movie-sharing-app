@@ -1,0 +1,19 @@
+# Assignment #6: Movie Sharing Razor Pages Application
+James Fulford
+jaf968@g.harvard.edu
+
+## Notes
+
+I added extra movies in the seeds table to cover several situations I could not easily recreate. Some of them are slightly funny. Enjoy.
+- (Star Trek IV and Star Wars both have the Category 'Comedy'. Good luck describing the plot of these movies without laughing)
+
+A movie can have many queued requests, which are stored in a separate table. While no user can request the same movie multiple times, it is possible to request a movie while it is being borrowed.
+- When you see MovieRequest, think 'waitlist'.
+
+If the owner of a movie (stored in the OwnerID field) changes the `Shareable` field, it simply prevents future requests from being made. It does not kill existing requests, and it does not bar the owner from lending the movie to everyone on the waitlist.
+- When you see Shareable, think 'listed' versus 'unlisted'.
+
+The canonical way of checking if a movie has been shared is checking whether `SharedWithId` is null. This field, along with other SharedWith* fields, is populated with a user's data once their request is accepted by the owner.
+- (The other SharedWith* fields were required by the assignment. If that restriction were not in play, I would have at least used a [complextype] annotation and saved some brittle code)
+
+If the `BeingReturned` field is true, it means the borrower has initiated the return process. This will prompt the owner to acknowledge receipt of the returned movie.
