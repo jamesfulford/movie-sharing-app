@@ -75,12 +75,16 @@ namespace HW6MovieSharing.Pages.Movies
                 return NotFound();
             }
 
+            // No longer shared
             movie.SharedDate = null;
             movie.SharedWithEmailAddress = null;
             movie.SharedWithEmailAddress = null;
             movie.SharedWithFirstName = null;
             movie.SharedWithLastName = null;
             movie.SharedWithId = null;
+
+            // No longer being returned
+            movie.BeingReturned = false;
 
             await movieContext.SaveChangesAsync();
 
